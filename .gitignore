@@ -1,5 +1,3 @@
-include
-lib
-bin
-.idea
-.DS_Store
+include/
+lib/
+bin/
