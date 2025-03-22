@@ -29,7 +29,7 @@ ifeq ($(OS), Windows_NT)
 	linkFlags += -Wl,--allow-multiple-definition -pthread -lopengl32 -lgdi32 -lwinmm -static -static-libgcc -static-libstdc++
 	THEN := &&
 	PATHSEP := \$(BLANK)
-	MKDIR := -mkdir -p
+	MKDIR := -mkdir
 	RM := -del /q
 	COPY = -robocopy "$(call platformpth,$1)" "$(call platformpth,$2)" $3
 else
@@ -59,8 +59,8 @@ endif
 # Lists phony targets for Makefile
 .PHONY: all setup submodules execute clean
 
-# Default target, compiles, executes and cleans
-all: $(target) execute clean
+# compile and run
+all: $(target) run
 
 # Sets up the project for compiling, generates includes and libs
 setup: include lib
@@ -94,7 +94,7 @@ $(buildDir)/%.o: src/%.cpp Makefile
 	$(CXX) -MMD -MP -c $(compileFlags) $< -o $@ $(CXXFLAGS)
 
 # Run the executable
-execute:
+run:
 	$(target) $(ARGS)
 
 # Clean up all relevant files
