@@ -21,6 +21,8 @@ linkFlags = -L lib/$(platform) -l raylib
 
 # Check for Windows
 ifeq ($(OS), Windows_NT)
+	# del works differently in powershell as in cmd, so force cmd
+	SHELL=cmd
 	# Set Windows macros
 	platform := Windows
 	CXX ?= g++
@@ -69,14 +71,14 @@ submodules:
 
 # Copy the relevant header files into includes
 include: submodules
-	$(MKDIR) $(call platformpth, ./include)
+	$(MKDIR) $(call platformpth,./include)
 	$(call COPY,vendor/raylib/src,./include,raylib.h)
 	$(call COPY,vendor/raylib/src,./include,raymath.h)
 
 # Build the raylib static library file and copy it into lib
 lib: submodules
 	cd vendor/raylib/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
-	$(MKDIR) $(call platformpth, lib/$(platform))
+	$(MKDIR) $(call platformpth,lib/$(platform))
 	$(call COPY,vendor/raylib/src,lib/$(platform),libraylib.a)
 
 # Link the program and create the executable
@@ -88,7 +90,7 @@ $(target): $(objects)
 
 # Compile objects to the build directory
 $(buildDir)/%.o: src/%.cpp Makefile
-	$(MKDIR) $(call platformpth, $(@D))
+	$(MKDIR) $(call platformpth,$(@D))
 	$(CXX) -MMD -MP -c $(compileFlags) $< -o $@ $(CXXFLAGS)
 
 # Run the executable
@@ -97,4 +99,4 @@ execute:
 
 # Clean up all relevant files
 clean:
-	$(RM) $(call platformpth, $(buildDir)/*)
+	$(RM) $(call platformpth,$(buildDir)/*)
